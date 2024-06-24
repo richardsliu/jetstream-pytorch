@@ -272,9 +272,17 @@ def _load_from_gcs(input_ckpt_dir: epath.Path):
       with blob.open("rb") as f:
         ckpt = torch.load(f, map_location=torch.device("cpu"))
         #print(f">>>ckpt: {ckpt}")
+
+
+        ckpt_str = str(ckpt)[0:100]
+        print(f">>>torch.load ckpt_str: {ckpt_str}")
+
         checkpoints += ckpt
         print(f">>>Downloaded checkpoint: {len(checkpoints)}")
         f.close()
+
+  ckpt_str = str(checkpoints)[0:100]
+  print(f">>>return ckpt_str: {ckpt_str}")
   return checkpoints, params
 
 
