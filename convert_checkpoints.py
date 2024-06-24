@@ -266,7 +266,10 @@ def _load_from_gcs(input_ckpt_dir: epath.Path):
     if ".pth" in blob.name:
       print(f"Loading checkpoint files from {blob.name}")
       with blob.open("rb") as f:
-        checkpoints += torch.load(f, map_location=torch.device("cpu"))
+        ckpt = torch.load(f, map_location=torch.device("cpu"))
+        print(f">>>ckpt: {ckpt}")
+        checkpoints += ckpt
+        print(f">>>Downloaded checkpoint: {len(checkpoints)}")
         f.close()
   return checkpoints, params
 
