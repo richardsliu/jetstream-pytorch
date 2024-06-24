@@ -277,7 +277,7 @@ def _load_from_gcs(input_ckpt_dir: epath.Path):
         ckpt_str = str(ckpt)[0:100]
         print(f">>>torch.load ckpt_str: {ckpt_str}")
 
-        checkpoints += ckpt
+        checkpoints = ckpt
         print(f">>>Downloaded checkpoint: {len(checkpoints)}")
         f.close()
 
