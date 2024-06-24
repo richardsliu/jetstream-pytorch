@@ -156,6 +156,7 @@ def _checkpoints_have_same_weight_keys(
   if (not checkpoint_list) or len(checkpoint_list) <= 1:
     return True
   for m in checkpoint_list[1:]:
+    print(f">>>>{m}")
     if set(checkpoint_list[0].keys()) != set(m.keys()):
       return False
   return True
