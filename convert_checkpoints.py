@@ -185,6 +185,10 @@ def _merge_llama_weights(
     tmp_dir = epath.Path("/tmp/checkpoints")
     tmp_dir.mkdir(parents=True, exist_ok=True)
     print(f"Stage in-memory data on disk {tmp_dir} to reduce memory uage")
+
+  ckpt_str = str(checkpoints)[0:100]
+  print(f">>> _merge_llama_weights  ckpt_str: {ckpt_str}")
+
   if not _checkpoints_have_same_weight_keys(checkpoints):
     raise ValueError("Checkpoint must have the same set of weights.")
   weight_keys = checkpoints[0].keys()
@@ -267,7 +271,7 @@ def _load_from_gcs(input_ckpt_dir: epath.Path):
       print(f"Loading checkpoint files from {blob.name}")
       with blob.open("rb") as f:
         ckpt = torch.load(f, map_location=torch.device("cpu"))
-        print(f">>>ckpt: {ckpt}")
+        #print(f">>>ckpt: {ckpt}")
         checkpoints += ckpt
         print(f">>>Downloaded checkpoint: {len(checkpoints)}")
         f.close()
@@ -420,6 +424,10 @@ def _get_llama_state_dict(input_ckpt_dir):
     checkpoints, params = _load_from_local(input_ckpt_dir)
   end = time.perf_counter()
   print(f"Loading checkpoints takes {end - start} seconds")
+
+
+  ckpt_str = str(checkpoints)[0:100]
+  print(f">>> _get_llama_state_dict ckpt_str: {ckpt_str}")
 
   start = time.perf_counter()
   if len(checkpoints) > 1:
