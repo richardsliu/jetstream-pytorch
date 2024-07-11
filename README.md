@@ -211,7 +211,15 @@ If running on GKE:
    [here](https://cloud.google.com/kubernetes-engine/docs/how-to/persistent-volumes/cloud-storage-fuse-csi-driver)
    to enable GCSFuse for your cluster. This will be needed to store the
    converted weights.
-3. Deploy one of the sample Kuberay cluster configurations:
+3. Build and push the docker image:
+```bash
+cd kuberay/image
+docker build -t <image path> -f Dockerfile .
+docker push <image path
+```
+4. Open the Kuberay manifest files (under `kuberay/manifests`) and replace the
+   image name and GCS bucket name from the previous steps.
+5. Deploy one of the sample Kuberay cluster configurations:
 ```bash
 kubectl apply -f kuberay/manifests/ray-cluster.tpu-v4-singlehost.yaml
 ```
