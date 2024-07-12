@@ -461,7 +461,7 @@ class PyTorchRayWorker:
       existing_prefix: Optional[Prefix] = None,
       padded_tokens: PrefillInputs,  # PrefillInputs[np.ndarray],
       true_length: int,
-  ) -> None:
+  ) -> tuple[None, engine_api.ResultTokens]:
     """Do prefill in ray worker"""
     logits, updated_caches = self.prefill(
         params=params,
@@ -476,7 +476,25 @@ class PyTorchRayWorker:
     prefix = Prefix(token, updated_caches, true_length)
     self.prefix_queue.put(prefix, block=False)
 
-    return token
+    token_out = jnp.reshape(token, (1, 1))
+    data = jnp.concatenate(
+        [
+            token_out,  # First token
+            jnp.ones_like(token_out),  # validity of first token
+            jnp.zeros((1, 1), dtype=jnp.int32),  # length = 0
+        ],
+        axis=-1,
+    )
+    length = token_out.shape[1]
+    result = engine_api.ResultTokens(
+        data=data,
+        tokens_idx=(0, length),
+        valid_idx=(length, 2 * length),
+        length_idx=(2 * length, 2 * length + 1),
+        samples_per_slot=1,
+    )
+
+    return prefix, result
 
   def _convert_to_np_caches(
       self, caches: List[Tuple[jax.Array, jax.Array]]
